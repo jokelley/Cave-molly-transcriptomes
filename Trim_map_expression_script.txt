@@ -1,0 +1,122 @@
+################################################################################################
+#
+#           1. Read trimming, mapping and expression analyses                      
+#
+#
+################################################################################################
+
+######All trimming, mapping and expression analyses were performed at Oklahoma State Universities high performce super computing center
+# Runs Trim Galore on the files specified in the "TrimGalore_fastq_Locations.txt".  Note: this is a tab delimited file.
+# The for loop is hard coded to the number to lines in the "TrimGalore_fastq_Locations.txt" file. 
+# "cat" opens the file.
+# "sed" is grabbing the ith line of the file.
+# "awk is grabbing the 1st, 2nd, or 3rd column from the line above.
+# "mikdir" is creating a directory with the name supplied in "TrimGalore_fastq_Locations.txt"
+# The end result of running this script is a new set of directories, trimmed files that match, and a fastqc report that 
+#     match the directory structure of your pre-processed read data.
+
+#Run trimgalore using quality 0 (to remove primer dimer)
+#Version: trimgalore/0.4.0
+#Version: fastqc/0.11.3
+#Version: cutadept/1.3
+for i in {1..60}
+
+do
+read1=$(cat TrimGalore_fastq_Location.txt | sed -n ''$i'p' | awk '{print $1}')
+read2=$(cat TrimGalore_fastq_Location.txt | sed -n ''$i'p' | awk '{print $2}')
+dirName=$(cat TrimGalore_fastq_Location.txt | sed -n ''$i'p' | awk '{print $3}')
+
+trim_galore --quality 0 --fastqc_args "--noextract --nogroup" --stringency 6 -e 0.2 --gzip --length 50 --output_dir <path to output directory> --paired $read1 $read2
+done
+
+##Trim files again by running the loop with quality 24
+#Version: trimgalore/0.4.0
+#Version: fastqc/0.11.3
+#Version: cutadept/1.3
+
+for i in {1..60}
+
+do
+read1=$(cat TrimGalore_fastq_Location.txt | sed -n ''$i'p' | awk '{print $1}')
+read2=$(cat TrimGalore_fastq_Location.txt | sed -n ''$i'p' | awk '{print $2}')
+dirName=$(cat TrimGalore_fastq_Location.txt | sed -n ''$i'p' | awk '{print $3}')
+
+trim_galore --quality 24 --fastqc_args "--noextract --nogroup" --stringency 6 -e 0.2 --gzip --length 50 --output_dir <path to output directory> --paired $read1 $read2
+done
+
+##Index reference genome
+##Version: 0.7.12-r1039
+bwa index <path to reference genome>
+
+##Map reads to reference genome using BWA-mem aligner. -V Control the verbose level of the output (allowing for errors and warnings) -c Discard a MEM if it has more than 10000 occurence in the genome.
+##Version: 0.7.12-r1039
+##Do this step for all individuals
+bwa mem -v 2 -c 1000000 <path to indexed genome> <path to read 1> < path to read 2> > <filename.sam>
+
+##run awk script to remove soft clipping (note, this is run due to incompatabilities with aligning reads to the genome and extracting transcripts in cufflinks)
+##Do this step for all individuals  
+awk 'BEGIN {OFS="\t"} {if (substr($1,1,1)=="@") {print;next}; split($6,C,/[0-9]*/); split($6,L,/[SMDIN]/); if (C[2]=="S") {$10=substr($10,L[1]+1); $11=substr($11,L[1]+1)}; if (C[length(C)]=="S") {L1=length($10)-L[length(L)-1]; $10=substr($10,1,L1); $11=substr($11,1,L1); }; gsub(/[0-9]*S/,"",$6); print} <path to mapped .sam filew> > <filename.sam>
+
+##Convert Sam to Bam files 
+##-b outputs in the .bam format, -S detects .sam output and -h includes the header
+##Version: 0.1.19-44428cd
+##Do this step for all individuals
+samtools view -bSh <path to awk corrected .sam files> > <filename.bam>
+
+##Sort .bam files (based on coordinates) 
+##Version: 0.1.19-44428cd
+##Do this step for all individuals 
+samtools sort <path to .bam file> <filename.bam>
+
+##Check alignment statistics using samtools flagstat
+##Version: 0.1.19-44428cd
+##Do this step for all individuals
+samtools flagstat <path to sorted mapped reads.bam>
+
+###Note at this step, we removed any individuals with poor mapping percents to the genome, this included all eyes, 4 brains and 2 gills.  
+
+##Run cufflinks to to extract putatively expressed regions for each individual (reference guided with the .gff file)
+##Version: cufflinks v2.2.1
+##Run for all individuals 
+cufflinks -o <cufflinks_name> -g <path to .gtf/.gff file> <path to sorted mapped reads>
+
+##Run cuffmerge to merge all expressed regions into a reference transcriptome 
+##Version: cufflinks v2.2.1
+cuffmerge -o <cuffmergefile.gtf> -g <path to .gff/.gtf> <location of all cufflinks output files> 
+
+#Run gffread to construct a transcript fasta file given the merged .gtf file (see above) and the reference (genome) fasta file. 
+##Version: cufflinks v2.2.1
+gffread -w <multifastafile.fa> -g <path to genome> <path to merged.gtf>
+
+#Concatenate mitochondrial sequences into reference (Accession number KC992991 from Pfenninger et al. 2014)
+cat <mitochondrial_sequences.fa> >> <multifastafile.fa>
+
+#Index the multifasta file (constructed using gffread)
+##Version: 0.7.12-r1039
+bwa index <path to multifasta file>
+
+#map reads to the multifasta file, -a is added as it allows output for all found alignments for single-end or unpaired paired-end reads. These alignments will be flagged as secondary alignments.
+##Version: 0.7.12-r1039
+#run for all individuals 
+bwa mem -v 2 -c 1000000 -a <path to indexed multifasta file> <path to read 1> <path to read 2> > <filename.sam>
+
+#Convert .sam files to .bam using samtools:
+##-b outputs in the .bam format, -S detects .sam output and -h includes the header
+##Version: 0.1.19-44428cd
+samtools view -bSh <path to mapped .sam> > <filename.bam>
+
+#Sort files based on name rather than coordinates (-n):
+##Version: 0.1.19-44428cd
+samtools sort -n <path to .bam file> <filename.bam>
+
+##Check alignment statistics using either samtools flagstat 
+##Version: 0.1.19-44428cd
+##Do this step for all individuals
+samtools flagstat <path to sorted mapped reads.bam>
+
+#Run eXpress to quantify the abundances of a set of target sequences from sampled subsequences.
+##Version: express v1.5.1
+express <path to indexed multifasta.fa> <path to sorted .bam file> -o <output file>
+
+#concatenate all counts files into a matix using custom perl script (extractcounts.pl) 
+./extractcounts.pl <path_to_eXpress_/results.xprs files>
