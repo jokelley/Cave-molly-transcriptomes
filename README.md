@@ -14,11 +14,11 @@ Used within the analysis pipeline
  - DE_tissue_final.R
 
 ## Counts matrix 
- - tissue.txt.gz 
+ - [tissue.txt.gz](https://github.com/jokelley/Cave-molly-transcriptomes/blob/master/tissue.txt.gz)
 
 Transcript abundance was measured using the program eXpress (http://bio.math.berkeley.edu/eXpress/overview.html). 
 For more information see methods section in Passow et al. 2017 and linux output (Trim_map_expression_scripts.txt)
-To extract counts information we used the perl script [a extractcounts.pl](https://github.com/jokelley/Cave-molly-transcriptomes/blob/master/extractcounts.pl)
+To extract counts information we used the perl script [extractcounts.pl](https://github.com/jokelley/Cave-molly-transcriptomes/blob/master/extractcounts.pl)
 
 
 ## GO results 
