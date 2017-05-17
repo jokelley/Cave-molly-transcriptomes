@@ -4,14 +4,14 @@ Files for "Complexities of gene expression patterns in natural populations of an
 Passow et al 2017, Molecular Ecology
 
 ## Analysis pipeline
- - Trim_map_expression_script.txt
+ - [Trim_map_expression_script.txt](https://github.com/jokelley/Cave-molly-transcriptomes/blob/master/Trim_map_expression_script.txt)
 
 Used within the analysis pipeline
 
 
 ## Differential expression analysis 
 
- - DE_tissue_final.R
+ - [DE_tissue_final.R](https://github.com/jokelley/Cave-molly-transcriptomes/blob/master/DE_tissue_final.R)
 
 ## Counts matrix 
  - [tissue.txt.gz](https://github.com/jokelley/Cave-molly-transcriptomes/blob/master/tissue.txt.gz)
@@ -22,7 +22,7 @@ To extract counts information we used the perl script [extractcounts.pl](https:/
 
 
 ## GO results 
- - GO-results folder
+ - [GO-results folder](https://github.com/jokelley/Cave-molly-transcriptomes/tree/master/GO-results)
 
 The folder contains files for section "3. Physiological pathways (gene function) shared between contrasting environmental conditions" within the R script DE_tissue_final.R
  
@@ -39,6 +39,6 @@ Gene ontology terms were obtained using BLAST2GO PRO (https://www.blast2go.com) 
 (5) The annotations were then exported as .txt files from BLAST2GO and saved with a _GO.txt extension. 
 
 ## BLAST output 
- - TableS4.csv
+ - [TableS4.csv](https://github.com/jokelley/Cave-molly-transcriptomes/blob/master/TableS4.csv)
 
 For all transcripts the BLAST output was saved to TableS4.csv. For BLAST output parameters, see methods in Passow et al. 2017 
