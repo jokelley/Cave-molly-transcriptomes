@@ -20,6 +20,11 @@ Transcript abundance was measured using the program eXpress (http://bio.math.ber
 For more information see methods section in Passow et al. 2017 and linux output (Trim_map_expression_scripts.txt)
 To extract counts information we used the perl script [extractcounts.pl](https://github.com/jokelley/Cave-molly-transcriptomes/blob/master/extractcounts.pl)
 
+## BLAST output 
+ - [TableS4.csv](https://github.com/jokelley/Cave-molly-transcriptomes/blob/master/TableS4.csv)
+
+For all transcripts the BLAST output was saved to TableS4.csv. For BLAST output parameters, see methods in Passow et al. 2017 
+
 
 ## GO results 
  - [GO-results folder](https://github.com/jokelley/Cave-molly-transcriptomes/tree/master/GO-results)
@@ -37,8 +42,3 @@ Gene ontology terms were obtained using BLAST2GO PRO (https://www.blast2go.com) 
 (4) We then implemented the function "Remove First Level Annotations" to remove the three main top-level GO terms (molecular function, cellular component and biological process). 
 
 (5) The annotations were then exported as .txt files from BLAST2GO and saved with a _GO.txt extension. 
-
-## BLAST output 
- - [TableS4.csv](https://github.com/jokelley/Cave-molly-transcriptomes/blob/master/TableS4.csv)
-
-For all transcripts the BLAST output was saved to TableS4.csv. For BLAST output parameters, see methods in Passow et al. 2017 
