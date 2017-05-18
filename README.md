@@ -23,7 +23,7 @@ To extract counts information we used the perl script [extractcounts.pl](https:/
 ## BLAST output 
  - [Reference.csv](https://github.com/jokelley/Cave-molly-transcriptomes/blob/master/Reference.csv)
 
-For all transcripts the BLAST output was saved to TableS4.csv. For BLAST output parameters, see methods in Passow et al. 2017 
+For all transcripts the BLAST output was saved to TableS4 from the manuscript, this is the first two columns of the table. For BLAST output parameters, see methods in Passow et al. 2017 
 
 
 ## GO results 
