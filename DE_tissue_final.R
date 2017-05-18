@@ -756,7 +756,7 @@ write.csv(brainmds, file="brain_individual_mds.csv")
 #
 ################################################################################################
 ## Read in reference 
-reference <- read.csv("TableS4.csv") #Table S4 from the manuscript which provides the reference 
+reference <- read.csv("Reference.csv") #First two columns from Table S4 from the manuscript which provides the reference 
 # annotations from BLAST to SwissProt
 
 ##################################GILL##########################################################
