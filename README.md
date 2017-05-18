@@ -21,7 +21,7 @@ For more information see methods section in Passow et al. 2017 and linux output 
 To extract counts information we used the perl script [extractcounts.pl](https://github.com/jokelley/Cave-molly-transcriptomes/blob/master/extractcounts.pl)
 
 ## BLAST output 
- - [TableS4.csv](https://github.com/jokelley/Cave-molly-transcriptomes/blob/master/TableS4.csv)
+ - [Reference.csv](https://github.com/jokelley/Cave-molly-transcriptomes/blob/master/Reference.csv)
 
 For all transcripts the BLAST output was saved to TableS4.csv. For BLAST output parameters, see methods in Passow et al. 2017 
 
